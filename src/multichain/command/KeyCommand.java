@@ -24,8 +24,8 @@ public class KeyCommand extends QueryBuilderKey {
 		initialize(ip, port, login, password);
 	}
 
-	public Object getPrivkey(String pubkey) throws MultichainException {
-		return executeDumpPrivkey(pubkey);
+	public Object getPrivkey(String privkey) throws MultichainException {
+		return executeDumpPrivkey(privkey);
 	}
 	
 	public Object importPrivkey(String privkey) throws MultichainException {

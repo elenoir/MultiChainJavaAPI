@@ -7,11 +7,14 @@
  */
 package multichain.command.builders;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 
 import multichain.command.MultichainException;
 import multichain.command.tools.MultichainTestParameter;
 import multichain.object.BalanceAssetBase;
+import multichain.object.formatters.GsonFormatters;
+import multichain.object.formatters.HexFormatter;
 
 /**
  * @author Ub - H. MARTEAU
@@ -284,9 +287,8 @@ public class QueryBuilderWalletTransaction extends QueryBuilderCommon {
 			throws MultichainException {
 		MultichainTestParameter.isNotNullOrEmpty("address", address);
 		MultichainTestParameter.valueIsPositive("count", count);
-		MultichainTestParameter.valueIsPositive("skip", skip);
-		return execute(CommandEnum.LISTADDRESSTRANSACTIONS, address, String.valueOf(count), String.valueOf(skip),
-				verbose);
+		MultichainTestParameter.valueIsNotNegative("skip", skip);
+		return execute(CommandEnum.LISTADDRESSTRANSACTIONS, address, count, skip, verbose);
 	}
 
 	/**
@@ -344,7 +346,7 @@ public class QueryBuilderWalletTransaction extends QueryBuilderCommon {
 	protected Object executeListWalletTransaction(long count, long skip, boolean includeWatchonly, boolean verbose)
 			throws MultichainException {
 		MultichainTestParameter.valueIsPositive("count", count);
-		MultichainTestParameter.valueIsPositive("skip", skip);
+		MultichainTestParameter.valueIsNotNegative("skip", skip);
 		return execute(CommandEnum.LISTWALLETTRANSACTIONS, String.valueOf(count), String.valueOf(skip),
 				includeWatchonly, verbose);
 	}
@@ -687,5 +689,18 @@ public class QueryBuilderWalletTransaction extends QueryBuilderCommon {
 
 		return execute(CommandEnum.SENDWITHMETADATAFROM, fromAddress, toAddress, String.valueOf(amount), hexMetaData);
 	}
+	
+	protected Object executeSendWithDataFrom(String fromAddress, String toAddress, String assetName, Integer assetValue, String metadata)
+			throws MultichainException {
+		MultichainTestParameter.isNotNullOrEmpty("fromAddress", fromAddress);
+		MultichainTestParameter.isNotNullOrEmpty("toAddress", toAddress);
+		MultichainTestParameter.isNotNullOrEmpty("metadata", metadata);
+		MultichainTestParameter.isNotNull("asset", assetName);
+		MultichainTestParameter.valueIsPositive("assetValue", assetValue);
+
+		SimpleEntry<String, Integer> simpleEntry = new SimpleEntry<String, Integer>(assetName, assetValue);
+		return execute(CommandEnum.SENDWITHDATAFROM, fromAddress, toAddress, simpleEntry, HexFormatter.toHex(metadata));
+	}
+	
 
 }

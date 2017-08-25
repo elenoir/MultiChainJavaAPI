@@ -7,10 +7,16 @@
  */
 package multichain.object.formatters;
 
+import java.lang.reflect.Type;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 /**
  * @author Ub - H. MARTEAU
@@ -33,8 +39,22 @@ public class GsonFormatters {
 
 	protected static String formatJson(Object value) {
 		final GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(SimpleEntry.class, new SimpleEntryAdapter());
 		final Gson gson = builder.create();
 
 		return gson.toJson(value);
 	}
+	
+	public static class SimpleEntryAdapter implements JsonSerializer<SimpleEntry> {
+
+		 @Override
+		 public JsonElement serialize(SimpleEntry src, Type typeOfSrc,
+		            JsonSerializationContext context) {
+
+		        JsonObject obj = new JsonObject();
+		        obj.addProperty(src.getKey().toString(), (Integer) src.getValue());
+
+		        return obj;
+		    }
+		}
 }

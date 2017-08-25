@@ -16,8 +16,8 @@ import multichain.command.builders.QueryBuilderCommon.CommandEnum;
  */
 public class QueryBuilderKey extends QueryBuilderCommon {
 
-	protected Object executeDumpPrivkey(String pubkey) throws MultichainException {
-		return execute(CommandEnum.DUMPPRIVKEY, pubkey);
+	protected Object executeDumpPrivkey(String privkey) throws MultichainException {
+		return execute(CommandEnum.DUMPPRIVKEY, privkey);
 	}
 	
 	protected Object executeImportPrivkey(String privkey) throws MultichainException {
